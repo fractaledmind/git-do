@@ -1,0 +1,25 @@
+#!/bin/sh
+# git done
+set -e
+
+# Get the name of the current (do) branch
+do_branch=$(git branch --no-color |
+            grep '^\* ' |
+            grep -v 'no branch' |
+            sed 's/^* //g')
+# Get the name of the do branch's parent branch (stored during `git do`)
+parent_branch=$(cat ".git/.git-do/parent-branch")
+
+# Commit all changes made in the do branch,
+# using the message (stored during `git do`) as the commit message
+git add --all
+git commit --all --file=".git/.git-do/message"
+
+# Checkout the parent branch
+git checkout "$parent_branch"
+
+# Merge the do branch back into parent branch
+git merge --quiet --ff-only "$do_branch"
+
+# Remove the do branch
+git branch --quiet --delete "$do_branch"

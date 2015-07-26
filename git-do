@@ -1,0 +1,27 @@
+#!/bin/sh
+# git-do
+# write a pre-emptive commit message, describing what your code will do
+set -e
+
+# Create sub-directory in the git directory to store the information
+[ -d ".git/.git-do" ] || mkdir ".git/.git-do"
+
+# Save the commit message and parent branch for later retrieval
+parent_branch="$(git branch --no-color |
+                 grep '^\* ' |
+                 grep -v 'no branch' |
+                 sed 's/^* //g')"
+commit_message="$1"
+
+echo "$commit_message" > ".git/.git-do/message"
+echo "$parent_branch" > ".git/.git-do/parent-branch"
+
+# Get shortened, slugified version of commit message, to use as branch name
+slugified_message="$(echo "$commit_message" |
+                     sed -e 's/[^[:alnum:]]/-/g' |
+                     tr -s '-' |
+                     tr A-Z a-z |
+                     cut -d "-" -f 1-5)"
+
+# Create and checkout do branch
+git checkout -b "do/$slugified_message"
