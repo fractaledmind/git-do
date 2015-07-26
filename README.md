@@ -1,4 +1,4 @@
-![logo](git-do.svg)
+![logo](https://cdn.rawgit.com/smargh/git-do/master/git-do.svg)
 #### Version 0.1
 
 #### Download on [GitHub](https://github.com/smargh/git-do)
